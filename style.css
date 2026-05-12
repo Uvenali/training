@@ -1,0 +1,117 @@
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #1a1a1a;
+    color: #eee;
+    margin: 0;
+}
+
+header {
+    background: #333;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #444;
+}
+
+.container {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    height: calc(100vh - 80px);
+}
+
+.panel {
+    background: #2d2d2d;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #444;
+}
+
+/* Наклейка и договор */
+.info-block,
+.sticker {
+    background: #f1c40f;
+    color: #333;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.sticker {
+    background: #ecf0f1;
+    border: 1px dashed #7f8c8d;
+}
+
+/* Светодиоды */
+.led-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #111;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.led {
+    width: 12px;
+    height: 12px;
+    background: #333;
+    border-radius: 50%;
+}
+
+.led.active {
+    background: #2ecc71;
+    box-shadow: 0 0 8px #2ecc71;
+}
+
+/* Монитор */
+.monitor-frame {
+    background: #000;
+    flex-grow: 1;
+    border: 12px solid #333;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#browser-bar {
+    background: #ddd;
+    padding: 5px;
+    display: flex;
+    gap: 5px;
+}
+
+#browser-bar input {
+    flex-grow: 1;
+    padding: 5px;
+}
+
+#screen-content {
+    background: #fff;
+    flex-grow: 1;
+    color: #333;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.desktop-wallpaper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #7f8c8d;
+}
+
+/* Интерфейс роутера внутри монитора */
+.router-login-form {
+    width: 250px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}

@@ -1,14 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
+
 <head>
-    <script src="https://telegram.org"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPE Simulator - Тренажер настройки</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <h1>Привет, <span id="username">пользователdfdfdfdь</span>!</h1>
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Развернуть на всё окно
-        document.getElementById('username').innerText = tg.initDataUnsafe.user?.first_name || "аноним";
-    </script>
+    <header>
+        <div id="mode-selector">
+            <button onclick="setMode('training')">Тренировка</button>
+            <button onclick="setMode('exam')">Практика</button>
+        </div>
+    </header>
+    <main class="container">
+        <section class="physical-layer">
+            <div class="panel">
+                <h3>Договор и оборудование</h3>
+                <div id="contract-info" class="info-block">
+                    <p>Логин: <span id="target-login">...</span></p>
+                    <p>Пароль: <span id="target-pass">...</span></p>
+                </div>
+                <div id="router-sticker" class="sticker">
+                    <p><strong>Наклейка роутера</strong></p>
+                    <p>IP: <span id="router-ip">...</span></p>
+                    <p>User: admin / Pass: <span id="admin-pass">...</span></p>
+                </div>
+                <div class="device-front-panel">
+                    <div class="led-group">
+                        <span>PWR</span>
+                        <div id="led-pwr" class="led active"></div>
+                        <span>WAN</span>
+                        <div id="led-wan" class="led"></div>
+                        <span>INET</span>
+                        <div id="led-inet" class="led"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="virtual-monitor">
+            <div class="monitor-frame">
+                <div id="browser-bar">
+                    <input type="text" id="browser-address" placeholder="Введите IP адрес...">
+                    <button onclick="browserGo()">Go</button>
+                </div>
+                <div id="screen-content">
+                    <!-- Сюда JS будет подгружать интерфейс роутера -->
+                    <div class="desktop-wallpaper">
+                        <p>Введите IP роутера в адресную строку, чтобы начать настройку</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="script.js"></script>
 </body>
+
 </html>
