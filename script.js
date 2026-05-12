@@ -1,87 +1,115 @@
-// 1. Состояние системы
-const state = {
-    mode: 'training',
-    data: {
-        pppoeLogin: `user${Math.floor(Math.random() * 9000)}`,
-        pppoePass: Math.random().toString(36).slice(-6),
-        routerIP: `192.168.${Math.floor(Math.random() * 254)}.1`,
-        adminPass: 'admin' + Math.floor(Math.random() * 99)
-    },
-    isLoggedIn: false
-};
+/* ==========================================================
+   БЛОК 1: ЛОГИКА ШАПКИ (ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ И УСТРОЙСТВ)
+   ========================================================== */
 
-// 2. Инициализация при загрузке
-window.onload = () => {
-    document.getElementById('target-login').innerText = state.data.pppoeLogin;
-    document.getElementById('target-pass').innerText = state.data.pppoePass;
-    document.getElementById('router-ip').innerText = state.data.routerIP;
-    document.getElementById('admin-pass').innerText = state.data.adminPass;
-
-    // Имитация линка в WAN порту
-    setTimeout(() => document.getElementById('led-wan').classList.add('active'), 1500);
-};
-
-// 3. Логика "Браузера"
-function browserGo() {
-    const addr = document.getElementById('browser-address').value;
-    const screen = document.getElementById('screen-content');
-
-    if (addr === state.data.routerIP) {
-        showRouterLogin();
-    } else {
-        screen.innerHTML = `<div style="color:red; text-align:center; margin-top:50px;">
-            <h2>404 Not Found</h2>
-            <p>Не удается получить доступ к сайту. Проверьте правильность IP адреса.</p>
-        </div>`;
-    }
+/**
+ * Переключает визуальный режим (Тренировка/Практика)
+ * @param {string} mode - Название режима
+ */
+function setMode(mode) {
+    // Находим все кнопки в блоке выбора режима
+    const buttons = document.querySelectorAll('#mode-selector button');
+    
+    // Удаляем у всех кнопок класс 'active'
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    // Добавляем класс 'active' той кнопке, на которую нажали
+    event.target.classList.add('active');
+    
+    console.log("Текущий режим работы:", mode);
+    // Здесь позже добавим логику включения/выключения подсказок
 }
 
-// Показать окно входа в роутер
-function showRouterLogin() {
-    const screen = document.getElementById('screen-content');
-    screen.innerHTML = `
-        <div class="router-login-form">
-            <h3>Вход в роутер</h3>
-            <input type="text" id="adm-user" placeholder="Username" value="admin"><br><br>
-            <input type="password" id="adm-pass" placeholder="Password"><br><br>
-            <button onclick="tryLogin()">Войти</button>
-        </div>
-    `;
+/**
+ * Переключает активное устройство (Роутер/ПК/Приставка)
+ * @param {string} deviceCode - Код устройства (например, ширина или ID)
+ */
+function setDeviceWidth(deviceCode) {
+    // Находим все кнопки в блоке выбора устройства
+    const buttons = document.querySelectorAll('#device-width-selector button');
+    
+    // Очищаем активный статус у всех кнопок группы
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    // Делаем нажатую кнопку активной
+    event.target.classList.add('active');
+    
+    console.log("Выбрано устройство для настройки:", deviceCode);
+    
+    // Вызов функции смены экрана (напишем её при верстке монитора)
+    // switchDeviceScreen(deviceCode); 
+}
+/* ==========================================================
+   БЛОК 2: ЛОГИКА ЭКРАНА ПК (CMD И СЕТЕВЫЕ НАСТРОЙКИ)
+   ========================================================== */
+
+/**
+ * Управляет доступностью полей ввода IP-адреса.
+ * Вызывается при переключении Radio-кнопок (Авто/Вручную).
+ * @param {boolean} isManual - Если true, поля становятся активными.
+ */
+function toggleIpFields(isManual) {
+    // Находим все текстовые поля ввода внутри блока IP
+    const fields = document.querySelectorAll('#ip-fields .ip-input');
+    
+    fields.forEach(input => {
+        // Меняем состояние доступности (disabled)
+        input.disabled = !isManual;
+        
+        // Если переключились на "Автоматически", очищаем введенные значения
+        if (!isManual) {
+            input.value = '';
+        }
+    });
 }
 
-function tryLogin() {
-    const pass = document.getElementById('adm-pass').value;
-    if (pass === state.data.adminPass) {
-        state.isLoggedIn = true;
-        showRouterSettings();
-    } else {
-        alert("Неверный пароль администратора!");
-    }
-}
+/**
+ * Обрабатывает ввод команд в виртуальную командную строку (CMD).
+ * @param {KeyboardEvent} event - Событие нажатия клавиши.
+ */
+function handleCmd(event) {
+    // Реагируем только на нажатие клавиши Enter
+    if (event.key === 'Enter') {
+        const input = document.getElementById('cmd-input');      // Поле ввода
+        const output = document.getElementById('cmd-output');    // Область вывода текста
+        const command = input.value.toLowerCase().trim();        // Текст команды в нижнем регистре
 
-function showRouterSettings() {
-    const screen = document.getElementById('screen-content');
-    screen.innerHTML = `
-        <div class="router-admin">
-            <h2 style="background:#2980b9; color:white; padding:10px;">Настройки WAN</h2>
-            <div style="padding:20px;">
-                <p>Тип подключения: <strong>PPPoE</strong></p>
-                <input type="text" id="ppp-login" placeholder="PPPoE Login"><br><br>
-                <input type="password" id="ppp-pass" placeholder="PPPoE Password"><br><br>
-                <button onclick="applyWAN()">Сохранить и подключить</button>
-            </div>
-        </div>
-    `;
-}
+        // 1. Отображаем введенную команду в окне консоли
+        output.innerHTML += `<div class="cmd-line">C:\\Users\\Admin>${input.value}</div>`;
 
-function applyWAN() {
-    const l = document.getElementById('ppp-login').value;
-    const p = document.getElementById('ppp-pass').value;
+        // 2. Выполняем логику в зависимости от команды
+        switch (command) {
+            case 'ipconfig':
+                // Имитация вывода сетевых настроек
+                output.innerHTML += `<div class="cmd-line">Настройка протокола IP для Windows:<br><br>
+                Адаптер Ethernet:<br>
+                Состояние среды . . . . . . . . : Подключен<br>
+                IPv4-адрес . . . . . . . . . . : 192.168.1.15<br>
+                Маска подсети . . . . . . . . : 255.255.255.0<br>
+                Основной шлюз . . . . . . . . : 192.168.1.1</div>`;
+                break;
 
-    if (l === state.data.pppoeLogin && p === state.data.pppoePass) {
-        document.getElementById('led-inet').classList.add('active');
-        alert("Интернет успешно подключен!");
-    } else {
-        alert("Ошибка: Неверный логин или пароль PPPoE");
+            case 'getmac':
+                // Имитация вывода MAC-адреса
+                output.innerHTML += `<div class="cmd-line">Физический адрес: 00-15-5D-01-CA-C2</div>`;
+                break;
+
+            case 'cls':
+                // Очистка экрана консоли
+                output.innerHTML = '';
+                break;
+
+            case '':
+                // Если нажат Enter на пустой строке — ничего не делаем
+                break;
+
+            default:
+                // Если команда не распознана
+                output.innerHTML += `<div class="cmd-line">"${command}" не является внутренней или внешней командой, исполняемой программой или пакетным файлом.</div>`;
+        }
+
+        // 3. Подготовка к следующему вводу
+        input.value = ''; // Очищаем поле ввода
+        output.scrollTop = output.scrollHeight; // Прокручиваем консоль вниз до конца
     }
 }

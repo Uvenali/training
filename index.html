@@ -5,56 +5,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPE Simulator - Тренажер настройки</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <header>
-        <div id="mode-selector">
-            <button onclick="setMode('training')">Тренировка</button>
-            <button onclick="setMode('exam')">Практика</button>
+        <div>
+            <div id="mode-selector">
+                <button onclick="setMode('training')">Тренировка</button>
+                <button onclick="setMode('exam')">Практика</button>
+            </div>
+            <div id="device-width-selector">
+                <button onclick="setDeviceWidth('1920')">Роутер</button>
+                <button onclick="setDeviceWidth('1280')">ПК</button>
+                <button onclick="setDeviceWidth('1024')">Тв приставка</button>
+           </div>
         </div>
     </header>
-    <main class="container">
-        <section class="physical-layer">
-            <div class="panel">
-                <h3>Договор и оборудование</h3>
-                <div id="contract-info" class="info-block">
-                    <p>Логин: <span id="target-login">...</span></p>
-                    <p>Пароль: <span id="target-pass">...</span></p>
-                </div>
-                <div id="router-sticker" class="sticker">
-                    <p><strong>Наклейка роутера</strong></p>
-                    <p>IP: <span id="router-ip">...</span></p>
-                    <p>User: admin / Pass: <span id="admin-pass">...</span></p>
-                </div>
-                <div class="device-front-panel">
-                    <div class="led-group">
-                        <span>PWR</span>
-                        <div id="led-pwr" class="led active"></div>
-                        <span>WAN</span>
-                        <div id="led-wan" class="led"></div>
-                        <span>INET</span>
-                        <div id="led-inet" class="led"></div>
+    <!-- ЭКРАН ПК -->
+    <div id="view-pc" class="screen-view hidden">
+        <div class="pc-desktop">
+            
+            <!-- ОКНО: Настройки сетевой карты (как на фото) -->
+            <div class="window adapter-settings">
+                <div class="window-header">Свойства: IP версии 4 (TCP/IPv4)</div>
+                <div class="window-body">
+                    <p class="desc">Параметры IP можно назначать автоматически...</p>
+                    
+                    <div class="radio-group">
+                        <input type="radio" name="ip-mode" id="ip-auto" checked onclick="toggleIpFields(false)">
+                        <label for="ip-auto">Получить IP-адрес автоматически</label>
+                    </div>
+                    
+                    <div class="radio-group">
+                        <input type="radio" name="ip-mode" id="ip-manual" onclick="toggleIpFields(true)">
+                        <label for="ip-manual">Использовать следующий IP-адрес:</label>
+                    </div>
+
+                    <div class="input-fields" id="ip-fields">
+                        <div class="field-row"><span>IP-адрес:</span> <input type="text" class="ip-input" placeholder="... . ... . ... . ..."></div>
+                        <div class="field-row"><span>Маска подсети:</span> <input type="text" class="ip-input"></div>
+                        <div class="field-row"><span>Основной шлюз:</span> <input type="text" class="ip-input"></div>
+                    </div>
+                    
+                    <div class="window-footer">
+                        <button class="win-btn" onclick="applyNetworkSettings()">ОК</button>
+                        <button class="win-btn">Отмена</button>
                     </div>
                 </div>
             </div>
-        </section>
-        <section class="virtual-monitor">
-            <div class="monitor-frame">
-                <div id="browser-bar">
-                    <input type="text" id="browser-address" placeholder="Введите IP адрес...">
-                    <button onclick="browserGo()">Go</button>
+
+            <!-- ОКНО: Командная строка -->
+            <div class="window cmd-window">
+                <div class="window-header">Командная строка</div>
+                <div id="cmd-output" class="cmd-body">
+                    <div class="cmd-line">Microsoft Windows [Version 10.0.19045.4170]</div>
+                    <div class="cmd-line">(c) Корпорация Майкрософт (Microsoft Corp.). Все права защищены.</div>
+                    <br>
                 </div>
-                <div id="screen-content">
-                    <!-- Сюда JS будет подгружать интерфейс роутера -->
-                    <div class="desktop-wallpaper">
-                        <p>Введите IP роутера в адресную строку, чтобы начать настройку</p>
-                    </div>
+                <div class="cmd-input-area">
+                    <span>C:\Users\Admin></span>
+                    <input type="text" id="cmd-input" autofocus onkeypress="handleCmd(event)">
                 </div>
             </div>
-        </section>
-    </main>
+
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 
